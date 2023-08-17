@@ -5,7 +5,10 @@ pseudoslimestat_n = stat_n(hp = 10.0, atk = 2, def_ = 0, hitrate = 100.0, dodger
                   critrate = 0.0, critres = 0.0, critdmg = 150.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 1)
 
 redslimestat_n = stat_n(hp = 25.0, atk = 4, def_ = 1, hitrate = 100.0, dodgerate = 0.0,
-                  critrate = 5.0, critres = 0.0, critdmg = 180.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 4)
+                  critrate = 5.0, critres = 0.0, critdmg = 160.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 4)
+
+goblinstat_n = stat_n(hp = 120.0, atk = 10, def_ = 3, hitrate = 100.0, dodgerate = 0.0,
+                  critrate = 5.0, critres = 0.0, critdmg = 150.0, guardrate = 5.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 15)
 """
 blueslimestat_n = stat_n(hp = 25.0, atk = 4, def_ = 1, hitrate = 100.0, dodgerate = 0.0,
                   critrate = 7.0, critres = 0.0, critdmg = 150.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 4)
