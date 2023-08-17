@@ -21,17 +21,17 @@ player = None
 monster = None
 
 @app.route('/')
-def login():
-    return render_template('login.html')
-
-@app.route('/index')
 def index():
     if 'user_id' in session:
         # 세션에 user_id가 있으면 로그인 상태로 간주하여 로그인 이후의 동작을 수행합니다.
         user_id = session['user_id']
-        return f'로그인된 사용자: {user_id}'
+        return render_template('start.html', user_id=user_id)
     # 세션에 user_id가 없으면 비로그인 상태로 간주하여 로그인 이전의 동작을 수행합니다.
-    return '로그인되지 않은 상태'
+    return render_template('start.html',user_id = user_id)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 @app.route('/logout')
 def logout():

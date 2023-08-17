@@ -11,10 +11,19 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navbar-buttons">
                         <li class="nav-item">
+                            {% if !(user_id)%}
                             <a class="nav-link active" aria-current="page" href="#">Register</a>
+                            {% endif %}
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#" onclick='login()'>Login</a>
+                            {% if !(user_id)%}
+                            <a class="nav-link active" aria-current="page" href="#">Register</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                            {% if user_id %}
+                            <a class="nav-link active" aria-current="page" href="battle">Battle</a>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
@@ -45,3 +54,4 @@
             buttons.innerHTML = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Register</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="#" onclick=\'login()\'>Login</a></li>'
         }
     }
+</script>
