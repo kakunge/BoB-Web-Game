@@ -1,0 +1,21 @@
+.main {
+    margin: 0 auto;
+    width: 70%;
+}
+
+h1 {
+    color: #abcdef;
+}
+
+.card {
+    width: 45%;
+    height: 200px;
+    display: inline-block;
+}
+
+.info {
+    margin: 0 auto;
+    width: 90%;
+    height: 600px;
+    display: block;
+}

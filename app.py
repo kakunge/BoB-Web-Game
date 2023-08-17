@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 
+# from objects import *
+from database import *
+
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 app.secret_key = 'kldjfkdufuk'
@@ -14,9 +17,13 @@ class User(db.Model):
     userid = db.Column("userid",db.String(80), unique=True, nullable=False,primary_key=True)
     userpw = db.Column("userpw",db.String(120), nullable=False)
 
-# ...
+player = None
+monster = None
 
 @app.route('/')
+@app.route('/index')
+    # return render_template("index.html")
+
 def login():
     return render_template('login.html')
 
