@@ -38,6 +38,7 @@ def print_1():
 def print_battle():
     monster = Monster("slime", 1, "Normal", "None", Reward(random.randint(1, 5), random.randint(1, 3)), pseudoslimestat_n)
     pve = BattlePVE(player, monster)
+    pve.battle()
     return render_template("battle.html", player=player, monster=monster, pve=pve)
 
 @app.route('/mypage')
