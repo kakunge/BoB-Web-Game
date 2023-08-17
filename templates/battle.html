@@ -18,15 +18,21 @@
             </div>
             <div class="card" style="float: right;">
                 <h3>Monster</h3>
+                name : {{monster.name}}</br>
                 type : {{monster.type_}}</br>
                 level : {{monster.lv_}}</br>
                 hp : {{monster.stat_n_.hp_}}</br>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow={{monster.curhp_}} aria-valuemin="0" aria-valuemax={{monster.stat_n_.hp_}}>{{monster.curhp_}}</div>
+                </div>
                 atk : {{monster.stat_n_.atk_}}</br>
                 def : {{monster.stat_n_.def_}}</br>
                 element : {{monster.stat_n_.atkelement_}}</br>
             </div>
             <div class="battle">
                 <h3>Battle Log</h3>
+                hello</br>
+                {{strrr|safe}}
             </div>
         </div>
     </body>
