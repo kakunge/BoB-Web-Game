@@ -67,10 +67,10 @@ class stat_s:
         self.getdmgdec_ -= stat.getdmgdec_
 
 class Reward:
-    def __init__(self, gold, exp):
+    def __init__(self, gold, exp, items = None):
         self.gold = gold
         self.exp = exp
-        
+        self.items = items # list of Item
 
 class Monster:
     def __init__(self, name: str, lv, type_: str, element: str, reward: Reward, stat_n: stat_n, stat_s = stat_s()):
@@ -93,39 +93,51 @@ class Monster:
         print("element: " + self.atkelement_)
 
 class Item:
-    def __init__(self, class_):
+    def __init__(self, class_, explanation: str, nums = 1):
         self.class_ = class_ # 소비, 기타 ...
+        self.explanation = explanation
+        self.nums = nums
 
 class Equipment(Item):
     class_ = "Equipment"
-    def __init__(self, type_: str, stat_n: stat_n, stat_s = stat_s()):
+    def __init__(self, type_: str):
         self.type_ = type_ # ...
 
 class Weapon(Equipment):
+    #class_ = super().class_
     slot = 1
-    def __init__(self, name: str, type_: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+    def __init__(self, name: str, type_: str, explanation: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+        super().__init__(type_)
         self.name = name
         self.type_ = type_ # Sword, etc..
+        self.explanation = explanation
         self.element_ = element
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
+        self.class_ = super().class_
 
 class Armor(Equipment):
-    def __init__(self, name: str, slot: int, type_: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+    def __init__(self, name: str, slot: int, type_: str, explanation: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+        super().__init__(type_)
         self.name = name
         self.slot = slot # 2, 3, 4
         self.type_ = type_ # Cloth, etc..
+        self.explanation = explanation
         self.element_ = element # 방어속성은 갑옷에 의해 결정된다. 나머지는 무속성.
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
+        self.class_ = super().class_
 
 class Accessory(Equipment):
-    def __init__(self, name: str, slot: int, type_: str, stat_n: stat_n, stat_s = stat_s()):
+    def __init__(self, name: str, slot: int, type_: str, explanation: str, stat_n: stat_n, stat_s = stat_s()):
+        super().__init__(type_)
         self.name = name
         self.slot = slot
         self.type_ = type_ # 목걸이, 반지
+        self.explanation = explanation
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
+        self.class_ = super().class_
 
 #class Rune: #나중에..
 
@@ -136,6 +148,9 @@ class Player:
     maxexp = 10
     curexp = 0
     gold = 0
+    inventory = None # list of Item
+    reststat = 0
+    #title #칭호, 나중에..
 
     def __init__(self, lv, class_: str, stat_n = stat_n(), stat_s = stat_s()):
         self.lv_ = lv
@@ -155,7 +170,8 @@ class Player:
             print("weapon: None")
         else:
             print("weapon: " + self.equipments[0].name)
-
+        print("Gold: " + str(self.gold))
+        print("Exp: " + str(self.curexp) + "/" + str(self.maxexp))
     
     def changestat(self):
         return
@@ -164,6 +180,9 @@ class Player:
         while self.curexp < self.maxexp:
             self.curexp -= self.maxexp
             self.lv_ += 1
+            self.stat_n_.hp_ += 10
+            self.curhp_ = self.stat_n_.hp_
+            self.reststat += 5
             if self.lv_ < 10:
                 self.maxexp += self.lv_ * 10
             elif self.lv_ == 10:
@@ -295,6 +314,7 @@ class BattlePVE:
 
     def defeat(self):
         # lose exp. + 상태이상: 부상. 숙소 등에서 회복 가능.
+        self.player.curexp = math.ceil(self.player.curexp * 3 / 4)
         return
     
     def win(self, monster: Monster):
@@ -330,10 +350,68 @@ class BattlePVE:
             
 class Field:
     player = None
+    dangerlevel = 1 # 위협도. max: 100
+    area = 1 # 1, 2. 2에서 보스 도전 가능.
+    battlepve = None
+    recovercount = 5
 
     def __init__(self, name: str, fieldlevel: int):
         self.name = name
-        self.flevel = fieldlevel # 추천레벨: fieldlevel * 
+        self.flevel = fieldlevel # 적정레벨: (fieldlevel - 1)*10 ~ fieldlevel*10 이며 area별로 5, 5를 담당한다.
 
     def enter(self, player: Player):
         self.player = player
+        return
+    
+    def leave(self, player: Player):
+        self.player = None
+        return
+    
+    def changearea(self, areanum: int):
+        self.area = areanum
+        return
+    
+    def incdanger(self):
+        self.dangerlevel += random.randint(10, 20)
+        if self.dangerlevel > 100:
+            self.dangerlevel = 100
+        return
+    
+    def initializedanger(self):
+        self.dangerlevel = 0
+        return
+
+    def recover(self):
+        return
+
+    def encounter(self):
+        # DB랑 연동 후 적정레벨과 배틀. 종료 후 None으로 바꾼다.
+        return
+    
+    def boss_challenge(self):
+        # 최종목표는 DB랑 연동. 그 전에는 하드코딩.
+        return
+
+    def explore(self):
+        if self.dangerlevel - random.randint(1, 100) >= 0:
+            self.encounter()
+        
+        probabilitylv = random.randint(1, 100)
+        reclv = (self.fieldlevel - 1)*10 + self.area*5 # 적정레벨
+        if probabilitylv <= 40:
+            self.incdanger()
+            self.player.curexp += random.randint(reclv*5 - 24, math.floor((reclv**2) * 3 / 5))
+            self.player.gold += random.randint(reclv, reclv*4)
+        elif (40 < probabilitylv) and (probabilitylv <= 50):
+            self.player.gold += random.randint(reclv*20, reclv*80)
+        elif (50 < probabilitylv) and (probabilitylv <= 70):
+            self.player.curhp_ -= (math.ceil(self.player.stat_n_.hp_ / 5) + reclv - self.player.stat_n_.def_)
+        elif (70 < probabilitylv) and (probabilitylv <= 75):
+            return
+        elif (75 < probabilitylv) and (probabilitylv <= 80):
+            return
+        else:
+            return
+        #
+        return
+
