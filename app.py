@@ -1,32 +1,42 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 
 # from objects import *
 from database import *
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/dbname'  # MySQL 연결 정보 입력
+db = SQLAlchemy(app)
+
+# 모델 클래스 임포트
+from model import User
 
 player = None
 monster = None
 
 @app.route('/')
 @app.route('/index')
-def print_index():
-    global player
-    player = Player(1, "Novice")
-    return render_template("index.html")
+    # return render_template("index.html")
 
-@app.route('/1')
-def print_1():
-    return render_template("1.html")
+def login():
+    return render_template('login.html')
 
-@app.route('/battle')
-def print_battle():
-    monster = Monster(1, "Normal", pseudoslimestat_n)
-    return render_template("battle.html", player=player, monster=monster)
+@app.route('/report', methods=['POST'])
+def report():
+    userid = request.form['userid']
+    userpw = request.form['userpw']
 
-@app.route('/mypage')
-def print_mypage():
-    return render_template("mypage.html", player=player)
+    lower_letter = any(c.islower() for c in userpw)
+    upper_letter = any(c.isupper() for c in userpw)
+    num_end = userid[-1].isdigit()
+    report = lower_letter & upper_letter & num_end
 
-if __name__ == "__main__":
-    app.run()
+    if report:
+        new_user = User(username=userid, userpw=userpw)
+        db.session.add(new_user)
+        db.session.commit()
+
+    return render_template('report.html', userid=userid, userpw=userpw, lower=lower_letter, upper=upper_letter, num_end=num_end, report=report)
+
+if __name__ == '__main__':
+    app.run(debug=True)
