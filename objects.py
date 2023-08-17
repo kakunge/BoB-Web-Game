@@ -344,7 +344,7 @@ class BattlePVE:
         # get rewards.
         self.player.gold += monster.reward.gold
         self.player.curexp += monster.reward.exp
-        if self.player.curexp > self.player.maxexp:
+        if self.player.curexp >= self.player.maxexp:
             self.player.levelup()
         return
 
@@ -448,7 +448,7 @@ class Field:
             self.incdanger()
             self.player.curexp += random.randint(reclv*5 - 24, math.floor((reclv**2) * 3 / 5))
             self.player.gold += random.randint(reclv, reclv*4)
-            if self.player.curexp > self.player.maxexp:
+            if self.player.curexp >= self.player.maxexp:
                 self.player.levelup()
         elif (40 < probabilitylv) and (probabilitylv <= 50):
             self.player.gold += random.randint(reclv*20, reclv*80)
@@ -460,7 +460,7 @@ class Field:
         elif (75 < probabilitylv) and (probabilitylv <= 80):
             self.incdanger()
             self.player.curexp += math.floor(self.player.maxexp / 5)
-            if self.player.curexp > self.player.maxexp:
+            if self.player.curexp >= self.player.maxexp:
                 self.player.levelup()
             return
         else:
