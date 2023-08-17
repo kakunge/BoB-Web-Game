@@ -64,9 +64,3 @@ class BattlePVE:
         #텍스트 출력 후 1초 슬립
 
 
-    def battlestart(self):
-        if self.player.stat_n_.speed_ < self.monster.stat_n_.speed_:
-
-
-
-#class BattlePVP:

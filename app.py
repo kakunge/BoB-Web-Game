@@ -1,6 +1,10 @@
 from flask import Flask, render_template
 
+from objects import *
+
 app = Flask(__name__)
+
+player = Player(1, "Novice")
 
 @app.route('/')
 @app.route('/index')
@@ -13,7 +17,7 @@ def print_1():
 
 @app.route('/battle')
 def print_battle():
-    return render_template("battle.html")
+    return render_template("battle.html", player=player)
 
 if __name__ == "__main__":
     app.run()
