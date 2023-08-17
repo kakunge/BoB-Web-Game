@@ -11,18 +11,23 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navbar-buttons">
                         <li class="nav-item">
-                            {% if !(user_id)%}
-                            <a class="nav-link active" aria-current="page" href="#">Register</a>
+                            {% if not flag%}
+                            <a class="nav-link-login" aria-current="page" href="login.html">login</a>
                             {% endif %}
                         </li>
                         <li class="nav-item">
-                            {% if !(user_id)%}
-                            <a class="nav-link active" aria-current="page" href="#">Register</a>
+                            {% if not flag%}
+                            <a class="nav-link-signup" aria-current="page" href="signup.html">signup</a>
                             {% endif %}
                         </li>
                         <li class="nav-item">
-                            {% if user_id %}
-                            <a class="nav-link active" aria-current="page" href="battle">Battle</a>
+                            {% if flag %}
+                            <a class="nav-link-battle" aria-current="page" href="battle.html">Battle</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                            {% if flag %}
+                            <a class="nav-link-mypage" aria-current="page" href="mypage.html">Battle</a>
                             {% endif %}
                         </li>
                     </ul>
@@ -33,25 +38,3 @@
 {% endblock %}    
 </body>
 </html>
-
-<script>
-    function login() {
-        printNav(1);
-    }
-
-    function logout() {
-        printNav(0);
-    }
-
-    function printNav(flag) {
-        if (flag) {
-            let buttons = document.getElementById("navbar-buttons");
-            buttons.innerHTML = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="battle">Battle</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="mypage">My Page</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="#" onclick=\'logout()\'>Logout</a></li>'
-            console.log(flag);
-        }
-        else {
-            let buttons = document.getElementById("navbar-buttons");
-            buttons.innerHTML = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Register</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="#" onclick=\'login()\'>Login</a></li>'
-        }
-    }
-</script>

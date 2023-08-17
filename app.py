@@ -25,9 +25,9 @@ def index():
     if 'user_id' in session:
         # 세션에 user_id가 있으면 로그인 상태로 간주하여 로그인 이후의 동작을 수행합니다.
         user_id = session['user_id']
-        return render_template('start.html', user_id=user_id)
+        return render_template('start.html', flag=1)
     # 세션에 user_id가 없으면 비로그인 상태로 간주하여 로그인 이전의 동작을 수행합니다.
-    return render_template('start.html',user_id = user_id)
+    return render_template('start.html', flag=0)
 
 @app.route('/login')
 def login():
