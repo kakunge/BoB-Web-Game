@@ -170,7 +170,8 @@ class Player:
             print("weapon: None")
         else:
             print("weapon: " + self.equipments[0].name)
-
+        print("Gold: " + str(self.gold))
+        print("Exp: " + str(self.curexp) + "/" + str(self.maxexp))
     
     def changestat(self):
         return
@@ -356,7 +357,7 @@ class Field:
 
     def __init__(self, name: str, fieldlevel: int):
         self.name = name
-        self.flevel = fieldlevel # 추천레벨: (fieldlevel - 1)*10 ~ fieldlevel*10 이며 area별로 5, 5를 담당한다.
+        self.flevel = fieldlevel # 적정레벨: (fieldlevel - 1)*10 ~ fieldlevel*10 이며 area별로 5, 5를 담당한다.
 
     def enter(self, player: Player):
         self.player = player
