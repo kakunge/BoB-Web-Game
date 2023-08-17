@@ -100,23 +100,25 @@ class Item:
 
 class Equipment(Item):
     class_ = "Equipment"
-    def __init__(self, type_: str, stat_n: stat_n, stat_s = stat_s()):
+    def __init__(self, type_: str):
         self.type_ = type_ # ...
 
 class Weapon(Equipment):
-    class_ = super().class_
+    #class_ = super().class_
     slot = 1
     def __init__(self, name: str, type_: str, explanation: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+        super().__init__(type_)
         self.name = name
         self.type_ = type_ # Sword, etc..
         self.explanation = explanation
         self.element_ = element
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
+        self.class_ = super().class_
 
 class Armor(Equipment):
-    class_ = super().class_
     def __init__(self, name: str, slot: int, type_: str, explanation: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+        super().__init__(type_)
         self.name = name
         self.slot = slot # 2, 3, 4
         self.type_ = type_ # Cloth, etc..
@@ -124,16 +126,18 @@ class Armor(Equipment):
         self.element_ = element # 방어속성은 갑옷에 의해 결정된다. 나머지는 무속성.
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
+        self.class_ = super().class_
 
 class Accessory(Equipment):
-    class_ = super().class_
     def __init__(self, name: str, slot: int, type_: str, explanation: str, stat_n: stat_n, stat_s = stat_s()):
+        super().__init__(type_)
         self.name = name
         self.slot = slot
         self.type_ = type_ # 목걸이, 반지
         self.explanation = explanation
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
+        self.class_ = super().class_
 
 #class Rune: #나중에..
 
@@ -348,6 +352,7 @@ class Field:
     dangerlevel = 1 # 위협도. max: 100
     area = 1 # 1, 2. 2에서 보스 도전 가능.
     battlepve = None
+    recovercount = 5
 
     def __init__(self, name: str, fieldlevel: int):
         self.name = name
@@ -375,6 +380,9 @@ class Field:
         self.dangerlevel = 0
         return
 
+    def recover(self):
+        return
+
     def encounter(self):
         # DB랑 연동 후 적정레벨과 배틀. 종료 후 None으로 바꾼다.
         return
@@ -396,7 +404,13 @@ class Field:
         elif (40 < probabilitylv) and (probabilitylv <= 50):
             self.player.gold += random.randint(reclv*20, reclv*80)
         elif (50 < probabilitylv) and (probabilitylv <= 70):
-            self.player.
+            self.player.curhp_ -= (math.ceil(self.player.stat_n_.hp_ / 5) + reclv - self.player.stat_n_.def_)
+        elif (70 < probabilitylv) and (probabilitylv <= 75):
+            return
+        elif (75 < probabilitylv) and (probabilitylv <= 80):
+            return
+        else:
+            return
         
         return
 
