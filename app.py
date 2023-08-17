@@ -21,7 +21,8 @@ player = None
 
 @app.route('/')
 def start():
-
+    global player
+    player = Player(1, "Novice")
     # return render_template("index.html")
 
     if 'user_id' in session:
@@ -55,6 +56,11 @@ def print_revive():
 def print_equipexc():
     player.EquipExc()
     return render_template("equipexc.html")
+
+@app.route('/unequip')
+def print_unequip():
+    player.unequip(1)
+    return render_template("unequip.html")
 
 # 로그인 검사
 @app.route('/login_check', methods=['POST'])
