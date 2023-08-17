@@ -1,11 +1,20 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+import logging
 
 app = Flask(__name__)
+app.logger.setLevel(logging.DEBUG)
+app.secret_key = 'kldjfkdufuk'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://msh070809:pwpw@localhost:3306/Account'
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
+class User(db.Model):
+    __tablename__ = "USER"
+    userid = db.Column("userid",db.String(80), unique=True, nullable=False,primary_key=True)
+    userpw = db.Column("userpw",db.String(120), nullable=False)
+
+# ...
 
 @app.route('/')
 def login():
@@ -14,36 +23,31 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)  # 세션에서 사용자 정보 제거
-    return redirect(url_for('index'))
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
+    return redirect(url_for('login'))
 
 @app.route('/signup')
-def login():
+def signup():
     return render_template('signup.html')
 
-#id가 틀렸는지 pw가 틀렸는지 알려줘야 하지만 시간 관계상 생략
-#로그인 검사 db에 데이터가 있으면 세션 추가 후 login화면 전환 ,없을경우 something출력
-@app.route('/login_check', methods=['GET', 'POST'])
-def report():
+# 로그인 검사
+@app.route('/login_check', methods=['POST'])
+def login_check():
     if request.method == 'POST':
-        from model import User
-        userid  = request.form['userid']
+        userid = request.form['userid']
         userpw = request.form['userpw']
-
-        result = User.query.fillter_by(userid=userid).first()
-        if result and check_password_hash(result.userpw, userpw):
+        result = User.query.filter_by(userid=userid).first()
+        if result and result.userpw == userpw:
             session['user_id'] = result.userid
-            return render_template('login.html')
-    return "something, problem"
+            app.logger.info("Login success")
+            return render_template('login.html', message='로그인 성공')
+        else:
+            app.logger.warning("Login failed")
+            return render_template('login.html', message='로그인 실패')
 
-
-@app.route('/judge_signup', methods=['GET', 'POST'])
-def report():
+# 회원가입 평가
+@app.route('/judge_signup', methods=['POST'])
+def judge_signup():
     if request.method == 'POST':
-        from model import User
         userid = request.form['userid']
         userpw = request.form['userpw']
 
@@ -56,12 +60,14 @@ def report():
             new_user = User(userid=userid, userpw=userpw)
             db.session.add(new_user)
             db.session.commit()
+            app.logger.info("Signup success")
+            return render_template('login.html', message='회원가입 성공')
+        else:
+            app.logger.warning("Signup failed")
+            return render_template('signup_judge.html', userid=userid, userpw=userpw, lower=lower_letter, upper=upper_letter, num_end=num_end, report=report)
 
-        return render_template('signup_judge.html', userid=userid, userpw=userpw, lower=lower_letter, upper=upper_letter, num_end=num_end, report=report)
-    
-    # GET 요청일 경우, 폼을 보여줍니다.
-    return render_template('signup_judge.html', userid='', userpw='', lower=False, upper=False, num_end=False, report=False)
-
+# ...
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    db.init_app(app)
+    app.run(debug=True, host='0.0.0.0', port=9990)
