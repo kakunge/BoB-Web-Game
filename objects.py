@@ -224,6 +224,18 @@ class Player:
         self.stat_s_ + equipment.stat_s_
         return
     
+    def EquipExc(self): # 장비 교체
+        self.unequip(1)
+        excaliburstat_n = stat_n(hp = 1000.0, atk = 500, def_ = 0, hitrate = 30.0, dodgerate = 0.0,
+                  critrate = 20.0, critres = 0.0, critdmg = 50.0, guardrate = 0.0, guarddmgdec = 0.0, brkthr = 30.0, speed = 100)
+        excaliburstat_s = stat_s(1000, 20.0, 10.0)
+        excaliburexplain = "원탁의 아서왕이 사용했다고 전해지는 전설의 검이다. 앞을 가로막는 모든 것들을 벨 수 있다. 다만, 어떤 사정에 의하여 다량으로 배포되었다는 소문이 있다.. 설마 이것도 복제품?"
+        weapon = Weapon(name = "엑스칼리버", type_= "검", explanation = excaliburexplain, element = "Light", stat_n = excaliburstat_n, stat_s = excaliburstat_s)
+        self.equipments[0] = weapon
+        self.stat_n_ + weapon.stat_n_
+        self.stat_s_ + weapon.stat_s_
+        return
+    
     def getItem(self, item):
         self.inventory.append(item)
         return
@@ -338,6 +350,7 @@ class BattlePVE:
 
     def battle(self):
         if self.player.curhp_ <= 0:
+            self.log += "Your current status: Dead<br>"
             return
 
         if self.player.stat_n_.speed_ < self.monster.stat_n_.speed_:
