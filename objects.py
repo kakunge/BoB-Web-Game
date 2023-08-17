@@ -87,6 +87,7 @@ class Monster():
 class Weapon:
     def __init__(self, type_: str, stat_n: stat_n, stat_s = stat_s()) -> None:
         self.type_ = type_ # Sword, etc..
+        
 
 class Player:
     weapon = "None"
