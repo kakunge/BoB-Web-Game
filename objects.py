@@ -3,10 +3,8 @@ import math
 import time
 
 class stat_n:
-    def __init__(self, element = "None", hp = 20.0, atk = 2, def_ = 1, hitrate = 100.0, dodgerate = 5.0,
+    def __init__(self, hp = 20.0, atk = 2, def_ = 1, hitrate = 100.0, dodgerate = 5.0,
                   critrate = 5.0, critres = 0.0, critdmg = 150.0, guardrate = 3.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 10): # player's base stats
-        self.atkelement_ = element
-        self.defelement_ = element
         self.hp_ = hp
         self.atk_ = atk
         self.def_ = def_
@@ -68,11 +66,21 @@ class stat_s:
         self.givedmginc_ -= stat.givedmginc_
         self.getdmgdec_ -= stat.getdmgdec_
 
-class Monster():
-    def __init__(self, lv, type_: str, stat_n: stat_n, stat_s = stat_s()):
+class Reward:
+    def __init__(self, gold, exp):
+        self.gold = gold
+        self.exp = exp
+        
+
+class Monster:
+    def __init__(self, name: str, lv, type_: str, element: str, reward: Reward, stat_n: stat_n, stat_s = stat_s()):
+        self.name = name
         self.lv_ = lv
         self.type_ = type_ # Normal, Elite, BOSS
         self.curhp_ = stat_n.hp_
+        self.atkelement_ = element
+        self.defelement_ = element
+        self.reward = reward
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
     
@@ -82,15 +90,52 @@ class Monster():
         print("hp: " + str(self.stat_n_.hp_))
         print("atk: " + str(self.stat_n_.atk_))
         print("def: " + str(self.stat_n_.def_))
-        print("element: " + self.stat_n_.atkelement_)
+        print("element: " + self.atkelement_)
 
-class Weapon:
-    def __init__(self, type_: str, stat_n: stat_n, stat_s = stat_s()) -> None:
+class Item:
+    def __init__(self, class_):
+        self.class_ = class_ # 소비, 기타 ...
+
+class Equipment(Item):
+    class_ = "Equipment"
+    def __init__(self, type_: str, stat_n: stat_n, stat_s = stat_s()):
+        self.type_ = type_ # ...
+
+class Weapon(Equipment):
+    slot = 1
+    def __init__(self, name: str, type_: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+        self.name = name
         self.type_ = type_ # Sword, etc..
-        
+        self.element_ = element
+        self.stat_n_ = stat_n
+        self.stat_s_ = stat_s
+
+class Armor(Equipment):
+    def __init__(self, name: str, slot: int, type_: str, element: str, stat_n: stat_n, stat_s = stat_s()):
+        self.name = name
+        self.slot = slot # 2, 3, 4
+        self.type_ = type_ # Cloth, etc..
+        self.element_ = element # 방어속성은 갑옷에 의해 결정된다. 나머지는 무속성.
+        self.stat_n_ = stat_n
+        self.stat_s_ = stat_s
+
+class Accessory(Equipment):
+    def __init__(self, name: str, slot: int, type_: str, stat_n: stat_n, stat_s = stat_s()):
+        self.name = name
+        self.slot = slot
+        self.type_ = type_ # 목걸이, 반지
+        self.stat_n_ = stat_n
+        self.stat_s_ = stat_s
+
+#class Rune: #나중에..
 
 class Player:
-    weapon = "None"
+    equipments = [None, None, None, None, None, None]
+    atkelement_ = "None"
+    defelement_ = "None"
+    maxexp = 10
+    curexp = 0
+    gold = 0
 
     def __init__(self, lv, class_: str, stat_n = stat_n(), stat_s = stat_s()):
         self.lv_ = lv
@@ -105,30 +150,65 @@ class Player:
         print("hp: " + str(self.curhp_) + "/" + str(self.stat_n_.hp_))
         print("atk: " + str(self.stat_n_.atk_))
         print("def: " + str(self.stat_n_.def_))
-        print("element: " + self.stat_n_.atkelement_)
+        print("element: " + self.atkelement_)
+        if self.equipments[0] == None:
+            print("weapon: None")
+        else:
+            print("weapon: " + self.equipments[0].name)
+
     
     def changestat(self):
         return
     
     def levelup(self):
+        while self.curexp < self.maxexp:
+            self.curexp -= self.maxexp
+            self.lv_ += 1
+            if self.lv_ < 10:
+                self.maxexp += self.lv_ * 10
+            elif self.lv_ == 10:
+                self.maxexp += self.lv_ * 10
+                self.maxexp *= 2
+            elif (10 < self.lv_) and (self.lv_ < 30):
+                self.maxexp += self.lv_ * 20
+            elif self.lv_ == 30:
+                self.maxexp += self.lv_ * 20
+                self.maxexp *= 2
+            elif (30 < self.lv_) and (self.lv_ < 60):
+                self.maxexp += self.lv_ * 40
+            elif self.lv_ == 60:
+                self.maxexp += self.lv_ * 40
+                self.maxexp *= 3
+            elif (60 < self.lv_) and (self.lv_ < 100):
+                self.maxexp += self.lv_ * 120
+            else:
+                self.maxexp = 10000000000000
+        
         return
     
-    def takeoffWeapon(self):
-        if self.weapon == "None":
-            print("You can't do it.")
+    def unequip(self, slot: int):
+        if self.equipments[slot - 1] == None:
             return
         
-    
-    def changeWeapon(self): # 장비 교체
-        if self.weapon != "None":
-            print("")
-            return
+        self.stat_n_ - self.equipments[slot - 1].stat_n_
+        self.stat_s_ - self.equipments[slot - 1].stat_s_
+        if self.curhp_ > self.stat_n_.hp_:
+            self.curhp_ = self.stat_n_.hp_
+        self.equipments[slot - 1] = None
         return
+    
+    def Equip(self, equipment): # 장비 교체
+        self.unequip(equipment.slot)
+        self.equipments[equipment.slot - 1] = equipment
+        self.stat_n_ + equipment.stat_n_
+        self.stat_s_ + equipment.stat_s_
+        return
+
         
 def compareElement(attacker, defender):
-        if attacker.stat_n_.atkelement_ == defender.stat_n_.defelement_:
+        if attacker.atkelement_ == defender.defelement_:
             return 0 # "Equal"
-        elif (defender.stat_n_.defelement_ == "None") or (attacker.stat_n_.atkelement_ == "Blaze" and defender.stat_n_.defelement_ == "Earth") or (attacker.stat_n_.atkelement_ == "Cold" and defender.stat_n_.defelement_ == "Blaze") or (attacker.stat_n_.atkelement_ == "Earth" and defender.stat_n_.defelement_ == "Cold"):
+        elif (defender.defelement_ == "None") or (attacker.atkelement_ == "Blaze" and defender.defelement_ == "Earth") or (attacker.atkelement_ == "Cold" and defender.defelement_ == "Blaze") or (attacker.atkelement_ == "Earth" and defender.defelement_ == "Cold"):
             return 1 # "Attacker"
         else:
             return 2 # "Defender"
@@ -202,7 +282,7 @@ class BattlePVE:
         dmg = dmg * (1.0 + (self.pstat_s_.givedmginc_ - self.mstat_s_.getdmgdec_) / 100)
         
         self.monster.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
-        print("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.mosnter.stat_n_.hp_))
+        print("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.monster.stat_n_.hp_))
         time.sleep(0.5) #텍스트 출력 후 1초 슬립
 
         if self.monster.curhp_ <= 0:
@@ -213,20 +293,38 @@ class BattlePVE:
         print("Total Passed turn: " + str(self.turn))
         return
 
+    def defeat(self):
+        # lose exp. + 상태이상: 부상. 숙소 등에서 회복 가능.
+        return
+    
+    def win(self, monster: Monster):
+        # get rewards.
+        self.player.gold += monster.reward.gold
+        self.player.curexp += monster.reward.exp
+        if self.player.curexp > self.player.maxexp:
+            self.player.levelup()
+        return
+
     def battle(self):
         if self.player.stat_n_.speed_ < self.monster.stat_n_.speed_:
             if self.attacktop():
                 self.passedturn()
+                print("Monster wins.")
+                self.defeat()
                 return False # Monster win.
             self.turn += 0.5
         
         while True:
             if self.attacktom():
                 self.passedturn()
+                print("You win.")
+                self.win(self.monster)
                 return True
             self.turn += 0.5
             if self.attacktop():
                 self.passedturn()
+                print("Monster wins.")
+                self.defeat()
                 return False
             self.turn += 0.5
             
