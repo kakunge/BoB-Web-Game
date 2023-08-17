@@ -1,4 +1,4 @@
-body {
+.main {
     margin: 0 auto;
     width: 70%;
 }
@@ -7,6 +7,3 @@ h1 {
     color: #abcdef;
 }
 
-p {
-    color: #fedcba;
-}
