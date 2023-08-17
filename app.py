@@ -9,30 +9,31 @@ from database import *
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 app.secret_key = 'kldjfkdufuk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://msh070809:pwpw@localhost:3306/Account'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://test:1234@localhost:3306/Game'
 db = SQLAlchemy()
 
 class User(db.Model):
-    __tablename__ = "USER"
+    __tablename__ = "User"
     userid = db.Column("userid",db.String(80), unique=True, nullable=False,primary_key=True)
     userpw = db.Column("userpw",db.String(120), nullable=False)
 
 player = None
 
-# @app.route('/')
-# @app.route('/index')
+@app.route('/')
+def start():
+
     # return render_template("index.html")
 
-@app.route('/')
-@app.route('/index')
-def print_index():
-    global player
-    player = Player(1, "Novice")
-    return render_template("index.html")
+    if 'user_id' in session:
+        # 세션에 user_id가 있으면 로그인 상태로 간주하여 로그인 이후의 동작을 수행합니다.
+        user_id = session['user_id']
+        return render_template('start.html', flag=1)
+    # 세션에 user_id가 없으면 비로그인 상태로 간주하여 로그인 이전의 동작을 수행합니다.
+    return render_template('/', flag=0)
 
-@app.route('/1')
-def print_1():
-    return render_template("1.html")
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 @app.route('/battle')
 def print_battle():
@@ -55,6 +56,22 @@ def print_equipexc():
     player.EquipExc()
     return render_template("equipexc.html")
 
+# 로그인 검사
+@app.route('/login_check', methods=['POST'])
+def login_check():
+    global player
+    player = Player(1, "Novice")
+    if request.method == 'POST':
+        userid = request.form['userid']
+        userpw = request.form['userpw']
+        result = User.query.filter_by(userid=userid).first()
+        if result and result.userpw == userpw:
+            session['user_id'] = result.userid
+            app.logger.info("Login success")
+            return redirect('/')
+        else:
+            app.logger.warning("Login failed")
+            return render_template('login.html', message='로그인 실패')
 # ------------------
 
 
@@ -107,7 +124,6 @@ def print_equipexc():
 #             app.logger.warning("Signup failed")
 #             return render_template('signup_judge.html', userid=userid, userpw=userpw, lower=lower_letter, upper=upper_letter, num_end=num_end, report=report)
 
-# ...
 
 if __name__ == '__main__':
     db.init_app(app)
