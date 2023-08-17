@@ -5,7 +5,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://msh070809:pwpw@localhost:3306/Account'
 db = SQLAlchemy(app)
 
-from model import User
 
 @app.route('/')
 def login():
@@ -14,6 +13,7 @@ def login():
 @app.route('/report', methods=['GET', 'POST'])
 def report():
     if request.method == 'POST':
+        from model import User
         userid = request.form['userid']
         userpw = request.form['userpw']
 
