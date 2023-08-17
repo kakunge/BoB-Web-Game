@@ -4,6 +4,12 @@ from objects import *
 pseudoslimestat_n = stat_n(hp = 10.0, atk = 2, def_ = 0, hitrate = 100.0, dodgerate = 0.0,
                   critrate = 0.0, critres = 0.0, critdmg = 150.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 1)
 
+redslimestat_n = stat_n(hp = 25.0, atk = 4, def_ = 1, hitrate = 100.0, dodgerate = 0.0,
+                  critrate = 5.0, critres = 0.0, critdmg = 180.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 4)
+blueslimestat_n = stat_n(hp = 25.0, atk = 4, def_ = 1, hitrate = 100.0, dodgerate = 0.0,
+                  critrate = 7.0, critres = 0.0, critdmg = 150.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 4)
+greenslimestat_n = stat_n(hp = 25.0, atk = 3, def_ = 2, hitrate = 100.0, dodgerate = 0.0,
+                  critrate = 3.0, critres = 0.0, critdmg = 150.0, guardrate = 5.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 3)
 # monsters stat_s
 
 
