@@ -423,7 +423,7 @@ class Field:
         return
 
     def encounter(self):
-        # DB랑 연동 후 적정레벨과 배틀. 종료 후 None으로 바꾼다.
+        # DB랑 연동 후 적정레벨과 배틀. 종료 후 None으로 바꾼다. 일단은 하드 코딩..
         monster = None
         if self.fieldlevel == 1:
             monster = Monster(name = "redslime", lv = 3, type_ = "Normal", element = "Blaze", reward = Reward(random.randint(3, 15), random.randint(3, 9)),
@@ -477,4 +477,3 @@ class Field:
             return
         
         return
-
