@@ -215,6 +215,7 @@ class Player:
         if self.curhp_ > self.stat_n_.hp_:
             self.curhp_ = self.stat_n_.hp_
         self.equipments[slot - 1] = None
+        self.atkelement_ = "None"
         return
     
     def Equip(self, equipment): # 장비 교체
@@ -222,6 +223,11 @@ class Player:
         self.equipments[equipment.slot - 1] = equipment
         self.stat_n_ + equipment.stat_n_
         self.stat_s_ + equipment.stat_s_
+        if equipment.slot == 1:
+            self.atkelement_ = equipment.element_
+        if equipment.slot == 3:
+            self.defelement_ = equipment.element_
+        
         return
     
     def EquipExc(self): # 장비 교체
@@ -234,6 +240,7 @@ class Player:
         self.equipments[0] = weapon
         self.stat_n_ + weapon.stat_n_
         self.stat_s_ + weapon.stat_s_
+        self.atkelement_ = weapon.element_
         return
     
     def getItem(self, item):
