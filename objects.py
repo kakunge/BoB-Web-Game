@@ -178,7 +178,7 @@ class Player:
         return
     
     def levelup(self):
-        while self.curexp > self.maxexp:
+        while self.curexp >= self.maxexp:
             self.curexp -= self.maxexp
             self.lv_ += 1
             self.stat_n_.hp_ += 10
@@ -274,7 +274,7 @@ class BattlePVE:
         
         dmg = dmg * (1.0 + (self.mstat_s_.givedmginc_ - self.pstat_s_.getdmgdec_) / 100)
         
-        self.player.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
+        self.player.curhp_ -= round(dmg, 1) # 소수점 한자리 변경
         self.log += ("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_) + "<br>")
 
         if self.player.curhp_  <= 0:
@@ -305,7 +305,7 @@ class BattlePVE:
         
         dmg = dmg * (1.0 + (self.pstat_s_.givedmginc_ - self.mstat_s_.getdmgdec_) / 100)
         
-        self.monster.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
+        self.monster.curhp_ -= round(dmg, 1) # 소수점 한자리 변경
         self.log += ("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.monster.stat_n_.hp_) + "<br>")
         #time.sleep(0.5) #텍스트 출력 후 0.5초 슬립
 
@@ -363,7 +363,7 @@ class Field:
 
     def __init__(self, name: str, fieldlevel: int):
         self.name = name
-        self.flevel = fieldlevel # 적정레벨: (fieldlevel - 1)*10 ~ fieldlevel*10 이며 area별로 5, 5를 담당한다.
+        self.fieldlevel = fieldlevel # 적정레벨: (fieldlevel - 1)*10 ~ fieldlevel*10 이며 area별로 5, 5를 담당한다.
 
     def enter(self, player: Player):
         self.player = player
@@ -395,7 +395,20 @@ class Field:
 
     def encounter(self):
         # DB랑 연동 후 적정레벨과 배틀. 종료 후 None으로 바꾼다.
+        monster = None
+        if self.fieldlevel == 1:
+            monster = Monster(name = "redslime", lv = 3, type_ = "Normal", element = "Blaze", reward = Reward(random.randint(3, 15), random.randint(3, 9)),
+                               stat_n = stat_n(hp = 25.0, atk = 4, def_ = 1, hitrate = 100.0, dodgerate = 0.0, critrate = 5.0, critres = 0.0, critdmg = 160.0, guardrate = 0.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 4))
+        elif self.fieldlevel == 2:
+            monster = Monster(name = "Goblin", lv = 14, type_ = "Normal", element = "None", reward = Reward(random.randint(30, 150), random.randint(120, 360)),
+                               stat_n = stat_n(hp = 120.0, atk = 10, def_ = 3, hitrate = 100.0, dodgerate = 0.0, critrate = 5.0, critres = 0.0, critdmg = 150.0, guardrate = 5.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 15))
+        elif self.fieldlevel == 3:
+            monster = Monster(name = "Orc", lv = 26, type_ = "Normal", element = "None", reward = Reward(random.randint(30, 150), random.randint(300, 900)),
+                               stat_n = stat_n(hp = 250.0, atk = 20, def_ = 10, hitrate = 100.0, dodgerate = 0.0, critrate = 10.0, critres = 3.0, critdmg = 160.0, guardrate = 5.0, guarddmgdec = 30.0, brkthr = 0.0, speed = 25))
+        else:
+            return
 
+        self.battlepve = BattlePVE(self.player, monster)
         self.dangerlevel = 0
         return
     
