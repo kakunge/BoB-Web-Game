@@ -228,6 +228,10 @@ class Player:
         self.inventory.append(item)
         return
 
+    def revive(self):
+        if self.curhp_ <= 0:
+            self.curhp_ = self.stat_n_.hp_
+        return
         
 def compareElement(attacker, defender):
         if attacker.atkelement_ == defender.defelement_:
@@ -275,6 +279,7 @@ class BattlePVE:
         dmg = dmg * (1.0 + (self.mstat_s_.givedmginc_ - self.pstat_s_.getdmgdec_) / 100)
         
         self.player.curhp_ -= round(dmg, 1) # 소수점 한자리 변경
+        self.player.curhp_ = round(self.player.curhp_, 1)
         self.log += ("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_) + "<br>")
 
         if self.player.curhp_  <= 0:
@@ -306,6 +311,7 @@ class BattlePVE:
         dmg = dmg * (1.0 + (self.pstat_s_.givedmginc_ - self.mstat_s_.getdmgdec_) / 100)
         
         self.monster.curhp_ -= round(dmg, 1) # 소수점 한자리 변경
+        self.monster.curhp_ = round(self.monster.curhp_, 1)
         self.log += ("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.monster.stat_n_.hp_) + "<br>")
         #time.sleep(0.5) #텍스트 출력 후 0.5초 슬립
 
@@ -331,6 +337,9 @@ class BattlePVE:
         return
 
     def battle(self):
+        if self.player.curhp_ <= 0:
+            return
+
         if self.player.stat_n_.speed_ < self.monster.stat_n_.speed_:
             if self.attacktop():
                 self.passedturn()
