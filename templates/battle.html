@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>BoB Web Game</title>
+    </head>
+    <body>
+        {% include "components/navbar.html" %}
+        <div class="main">
+            <h1>Battle</h1>
+            <div class="card" style="float: left;">
+                <h3>Player</h3>
+                class : {{player.class_}}</br>
+                level : {{player.lv_}}</br>
+                hp : {{player.stat_n_.hp_}}</br>
+                atk : {{player.stat_n_.atk_}}</br>
+                def : {{player.stat_n_.def_}}</br>
+                element : {{player.stat_n_.atkelement_}}</br>
+            </div>
+            <div class="card" style="float: right;">
+                <h3>Monster</h3>
+                type : {{monster.type_}}</br>
+                level : {{monster.lv_}}</br>
+                hp : {{monster.stat_n_.hp_}}</br>
+                atk : {{monster.stat_n_.atk_}}</br>
+                def : {{monster.stat_n_.def_}}</br>
+                element : {{monster.stat_n_.atkelement_}}</br>
+            </div>
+        </div>
+    </body>
+</html>

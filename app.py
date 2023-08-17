@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
+# from objects import *
+from database import *
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/dbname'  # MySQL 연결 정보 입력
 db = SQLAlchemy(app)
@@ -8,7 +11,13 @@ db = SQLAlchemy(app)
 # 모델 클래스 임포트
 from model import User
 
+player = None
+monster = None
+
 @app.route('/')
+@app.route('/index')
+    # return render_template("index.html")
+
 def login():
     return render_template('login.html')
 
