@@ -5,9 +5,6 @@ from database import *
 
 app = Flask(__name__)
 
-player = Player(1, "Novice")
-monster = Monster(1, "Normal", pseudoslimestat_n)
-
 @app.route('/')
 @app.route('/index')
 def print_index():
@@ -19,6 +16,9 @@ def print_1():
 
 @app.route('/battle')
 def print_battle():
+    player = Player(1, "Novice")
+    monster = Monster(1, "Normal", pseudoslimestat_n)
+
     return render_template("battle.html", player=player, monster=monster)
 
 if __name__ == "__main__":
