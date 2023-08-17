@@ -37,6 +37,10 @@ def start():
 def login():
     return render_template('login.html')
 
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
 @app.route('/battle')
 def print_battle():
     monster = Monster("slime", 1, "Normal", "None", Reward(random.randint(1, 5), random.randint(1, 3)), pseudoslimestat_n)
