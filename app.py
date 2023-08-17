@@ -21,7 +21,7 @@ player = None
 monster = None
 
 @app.route('/')
-def index():
+def start():
     if 'user_id' in session:
         # 세션에 user_id가 있으면 로그인 상태로 간주하여 로그인 이후의 동작을 수행합니다.
         user_id = session['user_id']
@@ -52,11 +52,10 @@ def login_check():
         if result and result.userpw == userpw:
             session['user_id'] = result.userid
             app.logger.info("Login success")
-            return render_template('login.html', message='로그인 성공')
+            return render_template('start.html', flag=1)
         else:
             app.logger.warning("Login failed")
-            return render_template('login.html', message='로그인 실패')
-
+            return render_template('start.html', flag=0)
 # 회원가입 평가
 @app.route('/judge_signup', methods=['POST'])
 def judge_signup():
