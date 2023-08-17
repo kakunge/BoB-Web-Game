@@ -431,6 +431,8 @@ class Field:
             return
 
         self.battlepve = BattlePVE(self.player, monster)
+        self.battlepve.battle()
+        self.battlepve = None
         self.dangerlevel = 0
         return
     
