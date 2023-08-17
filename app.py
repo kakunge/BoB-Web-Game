@@ -11,5 +11,9 @@ def print_index():
 def print_1():
     return render_template("1.html")
 
+@app.route('/battle')
+def print_battle():
+    return render_template("battle.html")
+
 if __name__ == "__main__":
     app.run()
