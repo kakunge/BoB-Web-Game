@@ -148,7 +148,7 @@ class Player:
     maxexp = 10
     curexp = 0
     gold = 0
-    inventory = None # list of Item
+    inventory = [] # list of Item
     reststat = 0
     #title #칭호, 나중에..
 
@@ -172,12 +172,13 @@ class Player:
             print("weapon: " + self.equipments[0].name)
         print("Gold: " + str(self.gold))
         print("Exp: " + str(self.curexp) + "/" + str(self.maxexp))
+        print("remaining stat points: " + str(self.reststat))
     
     def changestat(self):
         return
     
     def levelup(self):
-        while self.curexp < self.maxexp:
+        while self.curexp > self.maxexp:
             self.curexp -= self.maxexp
             self.lv_ += 1
             self.stat_n_.hp_ += 10
@@ -221,6 +222,10 @@ class Player:
         self.equipments[equipment.slot - 1] = equipment
         self.stat_n_ + equipment.stat_n_
         self.stat_s_ + equipment.stat_s_
+        return
+    
+    def getItem(self, item):
+        self.inventory.append(item)
         return
 
         
@@ -271,7 +276,6 @@ class BattlePVE:
         
         self.player.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
         self.log += ("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_) + "<br>")
-        time.sleep(1) #텍스트 출력 후 1초 슬립
 
         if self.player.curhp_  <= 0:
             return True # death
@@ -303,7 +307,7 @@ class BattlePVE:
         
         self.monster.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
         self.log += ("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.monster.stat_n_.hp_) + "<br>")
-        time.sleep(0.5) #텍스트 출력 후 1초 슬립
+        #time.sleep(0.5) #텍스트 출력 후 0.5초 슬립
 
         if self.monster.curhp_ <= 0:
             return True # death
@@ -355,6 +359,7 @@ class Field:
     area = 1 # 1, 2. 2에서 보스 도전 가능.
     battlepve = None
     recovercount = 5
+    log = ""
 
     def __init__(self, name: str, fieldlevel: int):
         self.name = name
@@ -383,10 +388,15 @@ class Field:
         return
 
     def recover(self):
+        if self.recovercount > 0:
+            self.recovercount -= 1
+            self.player.curhp_ = self.player.stat_n_.hp_
         return
 
     def encounter(self):
         # DB랑 연동 후 적정레벨과 배틀. 종료 후 None으로 바꾼다.
+
+        self.dangerlevel = 0
         return
     
     def boss_challenge(self):
@@ -403,15 +413,23 @@ class Field:
             self.incdanger()
             self.player.curexp += random.randint(reclv*5 - 24, math.floor((reclv**2) * 3 / 5))
             self.player.gold += random.randint(reclv, reclv*4)
+            if self.player.curexp > self.player.maxexp:
+                self.player.levelup()
         elif (40 < probabilitylv) and (probabilitylv <= 50):
             self.player.gold += random.randint(reclv*20, reclv*80)
         elif (50 < probabilitylv) and (probabilitylv <= 70):
             self.player.curhp_ -= (math.ceil(self.player.stat_n_.hp_ / 5) + reclv - self.player.stat_n_.def_)
         elif (70 < probabilitylv) and (probabilitylv <= 75):
+            # Dungeon
             return
         elif (75 < probabilitylv) and (probabilitylv <= 80):
+            self.incdanger()
+            self.player.curexp += math.floor(self.player.maxexp / 5)
+            if self.player.curexp > self.player.maxexp:
+                self.player.levelup()
             return
         else:
+            self.encounter()
             return
         
         return
