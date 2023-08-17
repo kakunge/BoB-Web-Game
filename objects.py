@@ -270,7 +270,7 @@ class BattlePVE:
         dmg = dmg * (1.0 + (self.mstat_s_.givedmginc_ - self.pstat_s_.getdmgdec_) / 100)
         
         self.player.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
-        self.log += ("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_))
+        self.log += ("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_) + "<br>")
         time.sleep(1) #텍스트 출력 후 1초 슬립
 
         if self.player.curhp_  <= 0:
@@ -332,7 +332,7 @@ class BattlePVE:
                 self.passedturn()
                 self.log += "Monster wins.<br>"
                 self.defeat()
-                return False # Monster win.
+                return # Monster win.
             self.turn += 0.5
         
         while True:
@@ -340,13 +340,13 @@ class BattlePVE:
                 self.passedturn()
                 self.log += "You win.<br>"
                 self.win(self.monster)
-                return True
+                return
             self.turn += 0.5
             if self.attacktop():
                 self.passedturn()
                 self.log += "Monster wins.<br>"
                 self.defeat()
-                return False
+                return
             self.turn += 0.5
             
 class Field:
