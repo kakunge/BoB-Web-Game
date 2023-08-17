@@ -20,6 +20,7 @@ class User(db.Model):
 player = None
 
 @app.route('/')
+@app.route('/start')
 def start():
     global player
     player = Player(1, "Novice")

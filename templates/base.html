@@ -11,22 +11,22 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navbar-buttons">
                         <li class="nav-item">
-                            {% if not flag%}
+                            {% if flag%}
                             <a class="nav-link-login" aria-current="page" href="login">login</a>
                             {% endif %}
                         </li>
                         <li class="nav-item">
-                            {% if not flag%}
+                            {% if flag%}
                             <a class="nav-link-signup" aria-current="page" href="signup">signup</a>
                             {% endif %}
                         </li>
                         <li class="nav-item">
-                            {% if flag %}
+                            {% if not flag %}
                             <a class="nav-link-battle" aria-current="page" href="battle">Battle</a>
                             {% endif %}
                         </li>
                         <li class="nav-item">
-                            {% if flag %}
+                            {% if not flag %}
                             <a class="nav-link-mypage" aria-current="page" href="mypage">My Page</a>
                             {% endif %}
                         </li>
