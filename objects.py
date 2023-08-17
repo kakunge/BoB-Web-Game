@@ -19,18 +19,60 @@ class stat_n:
         self.gdd_ = guarddmgdec
         self.brk_ = brkthr
         self.speed_ = speed
+    
+    def __add__(self, stat):
+        # element는 따로 바꿔주자.
+        self.hp_ += stat.hp_
+        self.atk_ += stat.atk_
+        self.def_ += stat.def_
+        self.hr_ += stat.hr_
+        self.dr_ += stat.dr_
+        self.cr_ += stat.cr_
+        self.crr_ += stat.crr_
+        self.crd_ += stat.crd_
+        self.gr_ += stat.gr_
+        self.gdd_ += stat.gdd_
+        self.brk_ += stat.brk_
+        self.speed_ += stat.speed_
+    
+    def __sub__(self, stat):
+        # element는 따로 바꿔주자.
+        self.hp_ -= stat.hp_
+        self.atk_ -= stat.atk_
+        self.def_ -= stat.def_
+        self.hr_ -= stat.hr_
+        self.dr_ -= stat.dr_
+        self.cr_ -= stat.cr_
+        self.crr_ -= stat.crr_
+        self.crd_ -= stat.crd_
+        self.gr_ -= stat.gr_
+        self.gdd_ -= stat.gdd_
+        self.brk_ -= stat.brk_
+        self.speed_ -= stat.speed_
 
 class stat_s:
     def __init__(self, elemforce = 0, givedmginc = 0.0, getdmgdec = 0.0): # base stats
         self.eforce_ = elemforce
         self.givedmginc_ = givedmginc
         self.getdmgdec_ = getdmgdec
-
+    
+    def __add__(self, stat):
+        # element는 따로 바꿔주자.
+        self.eforce_ += stat.eforce_
+        self.givedmginc_ += stat.givedmginc_
+        self.getdmgdec_ += stat.getdmgdec_
+    
+    def __sub__(self, stat):
+        # element는 따로 바꿔주자.
+        self.eforce_ -= stat.eforce_
+        self.givedmginc_ -= stat.givedmginc_
+        self.getdmgdec_ -= stat.getdmgdec_
 
 class Monster():
     def __init__(self, lv, type_: str, stat_n: stat_n, stat_s = stat_s()):
         self.lv_ = lv
         self.type_ = type_ # Normal, Elite, BOSS
+        self.curhp_ = stat_n.hp_
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
     
@@ -42,27 +84,44 @@ class Monster():
         print("def: " + str(self.stat_n_.def_))
         print("element: " + self.stat_n_.atkelement_)
 
+class Weapon:
+    def __init__(self, type_: str, stat_n: stat_n, stat_s = stat_s()) -> None:
+        self.type_ = type_ # Sword, etc..
+
 class Player:
     weapon = "None"
 
     def __init__(self, lv, class_: str, stat_n = stat_n(), stat_s = stat_s()):
         self.lv_ = lv
         self.class_ = class_ # Warrior, etc.
+        self.curhp_ = stat_n.hp_
         self.stat_n_ = stat_n
         self.stat_s_ = stat_s
     
     def playerinfo(self):
         print("class: " + str(self.class_))
         print("level: " + str(self.lv_))
-        print("hp: " + str(self.stat_n_.hp_))
+        print("hp: " + str(self.curhp_) + "/" + str(self.stat_n_.hp_))
         print("atk: " + str(self.stat_n_.atk_))
         print("def: " + str(self.stat_n_.def_))
         print("element: " + self.stat_n_.atkelement_)
     
     def changestat(self):
         return
-
-    def changeWeapon(self):
+    
+    def levelup(self):
+        return
+    
+    def takeoffWeapon(self):
+        if self.weapon == "None":
+            print("You can't do it.")
+            return
+        
+    
+    def changeWeapon(self): # 장비 교체
+        if self.weapon != "None":
+            print("")
+            return
         return
         
 def compareElement(attacker, defender):
@@ -80,7 +139,7 @@ class BattlePVE:
     def __init__(self, player: Player, monster: Monster):
         self.player = player # 원래 스탯
         self.monster = monster
-        self.pstat_n_ = player.stat_n_ # 버프 포함 최종 스탯 + 변화하는 hp
+        self.pstat_n_ = player.stat_n_ # 버프 포함 최종 스탯
         self.pstat_s_ = player.stat_s_
         self.mstat_n_ = monster.stat_n_
         self.mstat_s_ = monster.stat_s_
@@ -109,11 +168,11 @@ class BattlePVE:
         
         dmg = dmg * (1.0 + (self.mstat_s_.givedmginc_ - self.pstat_s_.getdmgdec_) / 100)
         
-        self.pstat_n_.hp_ = self.pstat_n_.hp_ - math.floor(dmg * 10) / 10 # 소수점 한자리 변경
-        print("Player's hp: " + str(self.pstat_n_.hp_))
+        self.player.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
+        print("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_))
         time.sleep(1) #텍스트 출력 후 1초 슬립
 
-        if self.pstat_n_.hp_ <= 0:
+        if self.player.curhp_  <= 0:
             return True # death
         return False
 
@@ -141,11 +200,11 @@ class BattlePVE:
         
         dmg = dmg * (1.0 + (self.pstat_s_.givedmginc_ - self.mstat_s_.getdmgdec_) / 100)
         
-        self.mstat_n_.hp_ = self.mstat_n_.hp_ - math.floor(dmg * 10) / 10 # 소수점 한자리 변경
-        print("Monster's hp: " + str(self.mstat_n_.hp_))
+        self.monster.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
+        print("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.mosnter.stat_n_.hp_))
         time.sleep(0.5) #텍스트 출력 후 1초 슬립
 
-        if self.mstat_n_.hp_ <= 0:
+        if self.monster.curhp_ <= 0:
             return True # death
         return False
     
@@ -158,15 +217,15 @@ class BattlePVE:
             if self.attacktop():
                 self.passedturn()
                 return False # Monster win.
-            self.turn = self.turn + 0.5
+            self.turn += 0.5
         
         while True:
             if self.attacktom():
                 self.passedturn()
                 return True
-            self.turn = self.turn + 0.5
+            self.turn += 0.5
             if self.attacktop():
                 self.passedturn()
                 return False
-            self.turn = self.turn + 0.5
+            self.turn += 0.5
             
