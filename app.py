@@ -35,14 +35,16 @@ def start():
 def login():
     return render_template('login.html')
 
-@app.route('/logout')
-def logout():
-    session.pop('user_id', None)  # 세션에서 사용자 정보 제거
-    return redirect(url_for('login'))
+@app.route('/battle')
+def print_battle():
+    monster = Monster("slime", 1, "Normal", "None", Reward(random.randint(1, 5), random.randint(1, 3)), pseudoslimestat_n)
+    pve = BattlePVE(player, monster)
+    pve.battle()
+    return render_template("battle.html", player=player, monster=monster, pve=pve)
 
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')
+@app.route('/mypage')
+def print_mypage():
+    return render_template("mypage.html", player=player)
 
 # 로그인 검사
 @app.route('/login_check', methods=['POST'])
@@ -60,28 +62,57 @@ def login_check():
         else:
             app.logger.warning("Login failed")
             return render_template('login.html', message='로그인 실패')
+# ------------------
 
-# 회원가입 평가
-@app.route('/judge_signup', methods=['POST'])
-def judge_signup():
-    if request.method == 'POST':
-        userid = request.form['userid']
-        userpw = request.form['userpw']
 
-        lower_letter = any(c.islower() for c in userpw)
-        upper_letter = any(c.isupper() for c in userpw)
-        num_end = userid[-1].isdigit()
-        report = lower_letter & upper_letter & num_end
+# def login():
+#     return render_template('login.html')
 
-        if report:
-            new_user = User(userid=userid, userpw=userpw)
-            db.session.add(new_user)
-            db.session.commit()
-            app.logger.info("Signup success")
-            return render_template('login.html', message='회원가입 성공')
-        else:
-            app.logger.warning("Signup failed")
-            return render_template('signup_judge.html', userid=userid, userpw=userpw, lower=lower_letter, upper=upper_letter, num_end=num_end, report=report)
+# @app.route('/logout')
+# def logout():
+#     session.pop('user_id', None)  # 세션에서 사용자 정보 제거
+#     return redirect(url_for('login'))
+#
+# @app.route('/signup')
+# def signup():
+#     return render_template('signup.html')
+#
+# # 로그인 검사
+# @app.route('/login_check', methods=['POST'])
+# def login_check():
+#     if request.method == 'POST':
+#         userid = request.form['userid']
+#         userpw = request.form['userpw']
+#         result = User.query.filter_by(userid=userid).first()
+#         if result and result.userpw == userpw:
+#             session['user_id'] = result.userid
+#             app.logger.info("Login success")
+#             return render_template('login.html', message='로그인 성공')
+#         else:
+#             app.logger.warning("Login failed")
+#             return render_template('login.html', message='로그인 실패')
+#
+# # 회원가입 평가
+# @app.route('/judge_signup', methods=['POST'])
+# def judge_signup():
+#     if request.method == 'POST':
+#         userid = request.form['userid']
+#         userpw = request.form['userpw']
+#
+#         lower_letter = any(c.islower() for c in userpw)
+#         upper_letter = any(c.isupper() for c in userpw)
+#         num_end = userid[-1].isdigit()
+#         report = lower_letter & upper_letter & num_end
+#
+#         if report:
+#             new_user = User(userid=userid, userpw=userpw)
+#             db.session.add(new_user)
+#             db.session.commit()
+#             app.logger.info("Signup success")
+#             return render_template('login.html', message='회원가입 성공')
+#         else:
+#             app.logger.warning("Signup failed")
+#             return render_template('signup_judge.html', userid=userid, userpw=userpw, lower=lower_letter, upper=upper_letter, num_end=num_end, report=report)
 
 
 if __name__ == '__main__':

@@ -9,12 +9,28 @@
             <h1>My Page</h1>
             <div class="info">
                 <h3>Character Info</h3>
+                equipments : {{player.equipments}}</br>
+                attack element : {{player.atkelement_}}</br>
+                defence element : {{player.defelement_}}</br>
                 class : {{player.class_}}</br>
                 level : {{player.lv_}}</br>
-                hp : {{player.stat_n_.hp_}}</br>
+                gold : {{player.gold}}</br>
+                hp : {{player.curhp_}}/{{player.stat_n_.hp_}}</br>
+                exp : {{player.curexp}}/{{player.maxexp}}</br>
                 atk : {{player.stat_n_.atk_}}</br>
                 def : {{player.stat_n_.def_}}</br>
-                element : {{player.stat_n_.atkelement_}}</br>
+                hit rate : {{player.stat_n_.hr_}}</br>
+                dodge rate: {{player.stat_n_.dr_}}</br>
+                critical rate : {{player.stat_n_.cr_}}</br>
+                critical resist : {{player.stat_n_.crr_}}</br>
+                critical damage : {{player.stat_n_.crd_}}</br>
+                guard rate : {{player.stat_n_.gr_}}</br>
+                guard damage decrease : {{player.stat_n_.gdd_}}</br>
+                break through : {{player.stat_n_.brkthr_}}</br>
+                speed : {{player.stat_n_.speed_}}</br>
+                element force : {{player.stat_s_.eforce_}}</br>
+                give damage increase : {{player.stat_s_.givedmginc_}}</br>
+                get damage decrease : {{player.stat_s_.getdmgdec_}}</br>
             </div>
         </div>
     </body>
