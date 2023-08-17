@@ -235,6 +235,7 @@ def compareElement(attacker, defender):
 
 class BattlePVE:
     turn = 1
+    log = ""
 
     def __init__(self, player: Player, monster: Monster):
         self.player = player # 원래 스탯
@@ -251,12 +252,12 @@ class BattlePVE:
             return 0.0
         if (self.pstat_n_.gr_ - self.mstat_n_.brk_) - random.randint(1, 100) >= 0:
             #guarded
-            print("Player guarded.")
+            self.log += "Player guarded.<br>"
             dmg = dmg * (1.0 - self.pstat_n_.gdd_ / 100)
         else:
             if (self.mstat_n_.cr_ - self.pstat_n_.crr_) - random.randint(1, 100) >= 0:
                 #critical occured
-                print("Critical!!")
+                self.log += "Critical!!<br>"
                 dmg = dmg * (self.mstat_n_.crd_ / 100)
         
         if compareElement(self.monster, self.player) == 1:
@@ -269,7 +270,7 @@ class BattlePVE:
         dmg = dmg * (1.0 + (self.mstat_s_.givedmginc_ - self.pstat_s_.getdmgdec_) / 100)
         
         self.player.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
-        print("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_))
+        self.log += ("Player's hp: " + str(self.player.curhp_ ) + "/" + str(self.player.stat_n_.hp_))
         time.sleep(1) #텍스트 출력 후 1초 슬립
 
         if self.player.curhp_  <= 0:
@@ -283,12 +284,12 @@ class BattlePVE:
             return 0.0
         if (self.mstat_n_.gr_ - self.pstat_n_.brk_) - random.randint(1, 100) >= 0:
             #guarded
-            print("Monster guarded.")
+            self.log += "Monster guarded.<br>"
             dmg = dmg * (1.0 - self.mstat_n_.gdd_ / 100)
         else:
             if (self.pstat_n_.cr_ - self.mstat_n_.crr_) - random.randint(1, 100) >= 0:
                 #critical occured
-                print("Critical!!")
+                self.log += "Critical!!<br>"
                 dmg = dmg * (self.pstat_n_.crd_ / 100)
         
         if compareElement(self.player, self.monster) == 1:
@@ -301,7 +302,7 @@ class BattlePVE:
         dmg = dmg * (1.0 + (self.pstat_s_.givedmginc_ - self.mstat_s_.getdmgdec_) / 100)
         
         self.monster.curhp_ -= math.floor(dmg * 10) / 10 # 소수점 한자리 변경
-        print("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.monster.stat_n_.hp_))
+        self.log += ("Monster's hp: " + str(self.monster.curhp_) + "/" + str(self.monster.stat_n_.hp_) + "<br>")
         time.sleep(0.5) #텍스트 출력 후 1초 슬립
 
         if self.monster.curhp_ <= 0:
@@ -309,7 +310,7 @@ class BattlePVE:
         return False
     
     def passedturn(self):
-        print("Total Passed turn: " + str(self.turn))
+        self.log += ("Total Passed turn: " + str(self.turn) + "<br>")
         return
 
     def defeat(self):
@@ -329,7 +330,7 @@ class BattlePVE:
         if self.player.stat_n_.speed_ < self.monster.stat_n_.speed_:
             if self.attacktop():
                 self.passedturn()
-                print("Monster wins.")
+                self.log += "Monster wins.<br>"
                 self.defeat()
                 return False # Monster win.
             self.turn += 0.5
@@ -337,13 +338,13 @@ class BattlePVE:
         while True:
             if self.attacktom():
                 self.passedturn()
-                print("You win.")
+                self.log += "You win.<br>"
                 self.win(self.monster)
                 return True
             self.turn += 0.5
             if self.attacktop():
                 self.passedturn()
-                print("Monster wins.")
+                self.log += "Monster wins.<br>"
                 self.defeat()
                 return False
             self.turn += 0.5
@@ -412,6 +413,6 @@ class Field:
             return
         else:
             return
-        #
+        
         return
 
