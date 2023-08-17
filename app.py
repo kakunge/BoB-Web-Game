@@ -45,6 +45,16 @@ def print_battle():
 def print_mypage():
     return render_template("mypage.html", player=player)
 
+@app.route('/revive')
+def print_revive():
+    player.revive()
+    return render_template("revive.html")
+
+@app.route('/equipexc')
+def print_equipexc():
+    player.EquipExc()
+    return render_template("equipexc.html")
+
 # ------------------
 
 
