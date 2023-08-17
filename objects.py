@@ -328,3 +328,12 @@ class BattlePVE:
                 return False
             self.turn += 0.5
             
+class Field:
+    player = None
+
+    def __init__(self, name: str, fieldlevel: int):
+        self.name = name
+        self.flevel = fieldlevel # 추천레벨: fieldlevel * 
+
+    def enter(self, player: Player):
+        self.player = player
